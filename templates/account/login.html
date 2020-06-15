@@ -1,0 +1,49 @@
+{% extends "account/base.html" %}
+{% load static  %}
+{% load i18n  %}
+{% load crispy_forms_tags %}
+{% load account socialaccount %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+    <div class="container">
+       <div class="row" style="margin-top: 10vh!important;">
+            <div class="col-xl-6 offset-xl-3 col-md-8 offset-md-2 col-xs-8 offset-xs-2">
+               <div class="card">
+                   <div class="card-body">
+                        <div class="row text-center">
+                            <h3 class="text-center" style="margin-bottom: 26px; width: 100%;">Log In</h3>
+                        </div>
+                   {% get_providers as socialaccount_providers %}
+                    {% if socialaccount_providers %}
+                        {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+                    {% else %}
+                        <p>{% blocktrans %}If you have not created an account yet, then please
+                        <a href="{{ signup_url }}">sign up</a> first.{% endblocktrans %}</p>
+                    {% endif %}
+
+                       <hr>
+
+                    <form style="padding-top: 25px;" class="login" id="login_form" method="post" action="{% url 'account_login' %}">
+                          {% csrf_token %}
+                          {{ form|crispy }}
+                            <div id='form-errors'>{{ form_errors }}</div>
+                          {% if redirect_field_value %}
+                          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                          {% endif %}
+                        <button class="primaryAction btn btn-primary  btn-block login-submit" type="submit" >{% trans "Log In" %}</button>
+                        <div class="row" style="margin: 0; padding-top: 10px; padding-bottom: 10px;" >
+                            <a  class="button secondaryAction "  href="{% url 'account_reset_password' %}">{% trans "Forgot Password?" %}</a>
+                        </div>
+                    </form>
+                <hr>
+                <div class="text-center" style="padding-top: 20px ;">
+                    <a href="{% url 'account_signup' %}">New User ? Sign Up</a>
+                </div>
+                   </div>
+               </div>
+            </div>
+       </div>
+    </div>
+{% endblock %}
